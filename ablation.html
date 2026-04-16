@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="p1.title">Medical Imaging</title>
+  <style>
+    :root {
+      --bg-color: #111418;
+      --bg-gradient-a: rgba(36, 62, 93, 0.55);
+      --bg-gradient-b: rgba(32, 22, 48, 0.45);
+      --bg-gradient-c: rgba(12, 14, 18, 0.95);
+      --noise-opacity: 0.12;
+    }
+
+    * {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    *::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none;
+    }
+
+    html {
+      overflow: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, var(--bg-gradient-a), transparent 48%),
+        radial-gradient(circle at 85% 65%, var(--bg-gradient-b), transparent 52%),
+        linear-gradient(140deg, var(--bg-gradient-c) 0%, var(--bg-color) 60%, var(--bg-color) 100%);
+      background-color: var(--bg-color);
+      color: #f3f4f6;
+      min-height: 100vh;
+      opacity: 1;
+      position: relative;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    body::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    body.bright-mode {
+      --bg-color: #f5efe2;
+      --bg-gradient-a: rgba(228, 201, 156, 0.6);
+      --bg-gradient-b: rgba(245, 202, 214, 0.4);
+      --bg-gradient-c: rgba(245, 239, 226, 0.95);
+      --noise-opacity: 0.08;
+      color: #2f2a22;
+    }
+
+    body.page-exit {
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 25%, rgba(72, 115, 255, 0.18), transparent 46%),
+        radial-gradient(circle at 82% 72%, rgba(36, 203, 186, 0.16), transparent 44%),
+        linear-gradient(120deg, rgba(17, 20, 24, 0) 0%, rgba(17, 20, 24, 0.82) 100%);
+      opacity: 0;
+      transform: scale(1.08);
+      transition: opacity 0.95s ease, transform 0.95s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    body.page-exit::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: var(--noise-opacity);
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    body.page-exit .page {
+      animation: detail-content-exit 0.95s cubic-bezier(0.22, 0.75, 0.2, 1) forwards;
+    }
+
+    .page {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 40px max(24px, calc((100vw - 1100px) / 2 + 24px)) 56px;
+      box-sizing: border-box;
+      height: 100vh;
+      height: 100dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .page::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #f3f4f6;
+      text-decoration: none;
+      border: 1px solid #3b3f46;
+      border-radius: 8px;
+      padding: 8px 14px;
+      transition: transform 0.25s ease, background-color 0.25s ease;
+    }
+
+    .back-bottom {
+      display: block;
+      width: fit-content;
+      margin: 70px auto 0;
+      font-size: 18px;
+      padding: 12px 24px;
+      border-radius: 12px;
+    }
+
+    body.bright-mode .back {
+      color: #2f2a22;
+      border-color: #cdbca6;
+      background: #f7f0e4;
+    }
+
+    .back.is-opening {
+      animation: back-pop 0.95s cubic-bezier(0.18, 0.8, 0.28, 1) forwards;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .content img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #2a2f36;
+    }
+
+    body.bright-mode .content img,
+    body.bright-mode .streamlines img {
+      border-color: #cfbfa8;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #d8dbe1;
+    }
+
+    body.bright-mode p {
+      color: #4a4237;
+    }
+    .theme-toggle {
+      position: fixed;
+      right: 20px;
+      top: auto;
+      bottom: 20px;
+      z-index: 30;
+      width: 56px;
+      height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #3b3f46;
+      background: #222a34;
+      color: #f3f4f6;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px) scale(1.03);
+    }
+    body.bright-mode .theme-toggle {
+      border-color: #cdbca6;
+      background: #f7f0e4;
+      color: #2f2a22;
+    }
+
+    .content-secondary {
+      margin-top: 56px;
+    }
+
+    .streamlines {
+      margin-top: 56px;
+      text-align: center;
+    }
+
+    .streamlines img {
+      width: min(100%, 760px);
+      border-radius: 12px;
+      border: 1px solid #2a2f36;
+    }
+
+    .streamlines p {
+      max-width: 860px;
+      margin: 18px auto 0;
+    }
+
+    @keyframes back-pop {
+      0% {
+        transform: scale(1) rotate(0deg);
+        background-color: transparent;
+      }
+      35% {
+        transform: scale(1.08) rotate(-1.4deg);
+        background-color: #1b2129;
+      }
+      62% {
+        transform: scale(1.04) rotate(1.2deg);
+      }
+      100% {
+        transform: scale(1.1) rotate(0deg);
+        background-color: #222a34;
+      }
+    }
+
+    @keyframes detail-content-exit {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+      }
+      35% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.01);
+        filter: blur(0px);
+      }
+      100% {
+        opacity: 0.28;
+        transform: translateY(-14px) scale(0.96);
+        filter: blur(5px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="index.html" data-i18n="nav.back">Back to Overview</a>
+    <section class="content">
+      <img src="Graphics/Medical_Imaging/CT.gif" alt="CT gif" loading="lazy" decoding="async">
+      <div>
+        <h1 data-i18n="p1.h1.what">Medical Imaging</h1>
+        <p data-i18n="p1.p1">
+          Medical imaging is a field of medicine that uses different technologies to create images 
+          of the inside of the human body. These images help doctors see organs, bones, tissues, and blood 
+          vessels without performing surgery.
+        </p>
+        <p data-i18n="p1.p2">
+            It is mainly used to diagnose illnesses, monitor the progress of diseases, and support medical 
+            treatment. By providing detailed images, medical imaging helps doctors better understand a patient’s 
+            condition and make informed decisions about care.
+
+            This makes it an important part of modern healthcare since it improves diagnostic accuracy, 
+            supports early detection of health problems, and contributes to safer and more effective treatment planning.
+        </p>
+      </div>
+    </section>
+    <section class="streamlines">
+      <h1 data-i18n="p1.h1.model"></h1>
+      <p>Our work primarily focuses on **CT scans** and **MRI scans**, which are among the most commonly used imaging 
+        modalities in clinical practice.</p>
+      <img src="Graphics/Medical_Imaging/CT-vs-MRI.jpg" alt="CT-vs-MRI" loading="lazy" decoding="async">
+      <p data-i18n="p1.p3">
+        MRI and CT differ mainly in their use depending on the anatomical structures being examined. MRI is particularly
+         well suited for imaging soft tissues, such as the brain, spinal cord, muscles, ligaments, and internal organs, 
+         because it provides high contrast between different types of soft tissue. CT, in contrast, is especially useful 
+         for visualizing dense structures like bones and for assessing complex anatomical regions such as the chest or 
+         abdomen. It is also commonly used to evaluate fractures or detect internal bleeding. In summary, MRI is preferred 
+         for detailed soft tissue assessment, while CT is often chosen for examining bone structures and certain internal 
+         body regions.
+      </p>
+    </section>
+    <section class="content content-secondary">
+      <img src="Graphics/Medical_Imaging/CT.gif" alt="ECMO circuit duplicate" loading="lazy" decoding="async">
+      <div>
+        <h1 data-i18n="p1.h1.test">How CT and MRI Work</h1>
+        <p data-i18n="p1.p4">
+          CT scans use X-rays to create detailed cross-sectional images by taking multiple X-ray measurements 
+          from different angles around the body. These measurements are processed by a computer to reconstruct 
+          thin “slices” or cross-sections of the body, which can be stacked together to form a detailed 3D representation 
+          of the scanned area. This allows doctors to examine the body layer by layer and identify abnormalities in 
+          specific regions.
+        </p>
+        <p data-i18n="p1.p4">
+          MRI, on the other hand, uses strong magnetic fields and radio waves to generate images. It detects signals 
+          emitted by hydrogen atoms in the body’s tissues when exposed to these magnetic fields. Similar to CT, MRI 
+          produces multiple thin slices through the body, enabling detailed visualization of soft tissues in different 
+          planes. These slices can also be combined into 3D images, giving clinicians a comprehensive view of the patient’s 
+          anatomy without exposing them to ionizing radiation.
+        </p>
+      </div>
+    </section>
+    <a class="back back-bottom" href="index.html" data-i18n="nav.back">Back to Overview</a>
+  </main>
+  <button class="theme-toggle" type="button" aria-label="Enable bright mode"><span class="theme-toggle-icon" aria-hidden="true">&#9728;</span></button>
+  <script src="i18n.js"></script>
+  <script>
+  const backLinks = document.querySelectorAll('.back');
+  const themeToggle = document.querySelector('.theme-toggle');
+  let leaving = false;
+
+  function applyTheme(mode) {
+    const isBright = mode === 'bright';
+    document.body.classList.toggle('bright-mode', isBright);
+    if (window.refreshI18nThemeButtons) {
+      window.refreshI18nThemeButtons();
+    } else {
+      themeToggle.textContent = isBright ? '\uD83C\uDF19' : '\u2600';
+      themeToggle.setAttribute('aria-label', isBright ? 'Enable dark mode' : 'Enable bright mode');
+    }
+  }
+
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+  }
+
+  applyTheme(window.localStorage.getItem('themeMode') === 'bright' ? 'bright' : 'dark');
+
+  themeToggle.addEventListener('click', () => {
+    const nextMode = document.body.classList.contains('bright-mode') ? 'dark' : 'bright';
+    applyTheme(nextMode);
+    window.localStorage.setItem('themeMode', nextMode);
+  });
+
+  backLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (leaving) return;
+
+      leaving = true;
+      link.classList.add('is-opening');
+      document.body.classList.add('page-exit');
+      const fallbackIndex = 0;
+      const savedIndex = window.sessionStorage.getItem('lastProjectIndex');
+      const returnIndex = savedIndex === null ? fallbackIndex : savedIndex;
+      window.sessionStorage.setItem('returnToProjectIndex', String(returnIndex));
+
+      window.setTimeout(() => {
+        window.location.href = link.href;
+      }, 950);
+    });
+  });
+  </script>
+  <script src="lightbox.js"></script>
+</body>
+</html>
+
+
+

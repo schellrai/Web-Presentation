@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="index.title">Project Carousel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="lab-banner">
+    <div class="lab-banner-logo-group" aria-hidden="true">
+      <img src="Header/ricam_logo_new.png" alt="RICAM logo" loading="lazy" decoding="async">
+      <img src="Header/M3DM.png" alt="M3DM logo" loading="lazy" decoding="async">
+    </div>
+    <div class="lab-banner-text">Linz Lab for In-Silico Medical Interventions</div>
+  </div>
+  <div class="qr-fixed" aria-hidden="true">
+    <img src="Header/QR.png" alt="QR code" loading="lazy" decoding="async">
+  </div>
+  <div class="carousel-container">
+    <div class="carousel">
+      <div class="carousel-item" data-target="our-team.html">
+        <img src="Team/2025_team.jpg" alt="Our Team" loading="lazy" decoding="async">
+        <h2 data-i18n="index.project0">Our Team</h2>
+      </div>
+      <div class="carousel-item" data-target="workflow.html">
+        <img src="Workflow/Workflow.gif" alt="Workflow" loading="lazy" decoding="async">
+        <h2 data-i18n="index.workflow">Workflow</h2>
+      </div>
+      <div class="carousel-item" data-target="ablation.html">
+        <img src="Graphics/Medical_Imaging/CT.gif" alt="Ablation Treatments" loading="lazy" decoding="async">
+        <h2 data-i18n="index.Medical_Imaging">Ablation Treatments</h2>
+      </div>
+      <div class="carousel-item" data-target="ECMO.html">
+        <img src="VVECMO/Cannulas.gif" alt="Veno-Venous ECMO" loading="lazy" decoding="async">
+        <h2 data-i18n="index.ECMO">Veno-Venous ECMO</h2>
+      </div>
+      <div class="carousel-item" data-target="glioma.html">
+        <img src="Graphics/Device Embedding/Geom_with_cath.gif" alt="Glioma Progression" loading="lazy" decoding="async">
+        <h2 data-i18n="index.glioma">Glioma Progression</h2>
+      </div>
+    </div>
+    <div class="carousel-dots" aria-label="Projekt-Navigation"></div>
+  </div>
+  <aside class="funding-fixed" aria-label="Funding logos" role="button" tabindex="0" aria-expanded="false">
+    <div class="funding-box">
+      <div class="funding-box-title" data-i18n="index.funding">Funding</div>
+      <div class="funding-grid">
+        <div class="funding-logo-tile">
+          <img src="Funding/BMBWF_Logo.png" alt="BMBWF logo" loading="lazy" decoding="async">
+        </div>
+        <div class="funding-logo-tile">
+          <img src="Funding/EuroHPC_logo.png" alt="EuroHPC logo" loading="lazy" decoding="async">
+        </div>
+        <div class="funding-logo-tile">
+          <img src="Funding/FFG_logo.png" alt="FFG logo" loading="lazy" decoding="async">
+        </div>
+        <div class="funding-logo-tile">
+          <img src="Funding/fwf-logo_var2.png" alt="FWF logo" loading="lazy" decoding="async">
+        </div>
+        <div class="funding-logo-tile">
+          <img src="Funding/JKU_Logo.png" alt="JKU logo" loading="lazy" decoding="async">
+        </div>
+        <div class="funding-logo-tile">
+          <img src="Funding/upperaustria_logo.png" alt="Upper Austria logo" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="funding-backdrop" aria-hidden="true"></div>
+  <a class="mission-cta" href="Mission.html">Our Mission</a>
+  <button class="autoplay-toggle" type="button" aria-label="Automatisches Wischen starten">
+    <span class="autoplay-icon" aria-hidden="true">></span>
+    <span class="autoplay-text">Auto Scroll</span>
+  </button>
+  <button class="theme-toggle" type="button" aria-label="Bright Mode umschalten">
+    <span class="theme-toggle-icon" aria-hidden="true">&#9728;</span>
+  </button>
+
+  <script src="i18n.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
