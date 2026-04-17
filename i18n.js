@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const STORAGE_KEY = "appLang";
   const FALLBACK_LANG = "en";
   const LANG_LABELS = {
@@ -166,7 +166,7 @@
         flex-direction: column;
         align-items: flex-end;
         gap: 4px;
-        font-size: 13px;
+        font-size: 15px;
         color: inherit;
       }
       .language-menu-row {
@@ -176,7 +176,7 @@
       }
       .language-menu select {
         width: var(--utility-stack-width, 172px);
-        height: 38px;
+        height: 42px;
         box-sizing: border-box;
         border-radius: 8px;
         border: 1px solid #3b3f46;
@@ -184,14 +184,14 @@
         color: #f3f4f6;
         padding: 7px 14px;
         line-height: 1.3;
-        font-size: 13px;
+        font-size: 15px;
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
       }
       .language-menu select option {
         line-height: 1.3;
       }
       .language-note {
-        font-size: 11px;
+        font-size: 13px;
         opacity: 0.8;
       }
       body.bright-mode .language-menu select {
@@ -269,3 +269,4 @@
     await setLanguage(activeLang);
   });
 })();
+

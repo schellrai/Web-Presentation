@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Manrope:wght@400;500;600;700&display=swap");
+﻿@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Manrope:wght@400;500;600;700&display=swap");
 
 :root {
   --bg-color: #111418;
@@ -29,7 +29,7 @@
   --heading-letter-spacing: 0.012em;
   --body-letter-spacing: 0.008em;
   --icon-weight: 500;
-  --utility-stack-width: 172px;
+  --utility-stack-width: 204px;
   --utility-stack-right: 20px;
   --funding-left: 18px;
   --funding-width: min(380px, 52vw);
@@ -145,7 +145,7 @@ body.page-exit::before {
   align-items: center;
   gap: 14px;
   font-family: "Fraunces", "Georgia", serif;
-  font-size: clamp(0.98rem, 1.8vw, 1.45rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.85rem);
   font-weight: 650;
   letter-spacing: 0.02em;
   line-height: 1.18;
@@ -214,11 +214,12 @@ body.page-exit::before {
 
 .carousel-container {
   position: relative;
-  width: min(96vw, 1200px);
+  width: 100vw;
+  max-width: none;
   overflow-x: hidden;
   overflow-y: visible;
-  padding: 28px 0 52px;
-  margin-top: 24px;
+  padding: 86px 0 106px;
+  margin-top: 88px;
   touch-action: pan-y;
   cursor: grab;
 }
@@ -229,7 +230,7 @@ body.page-exit::before {
 
 .carousel {
   display: flex;
-  gap: 140px;
+  gap: 210px;
   justify-content: flex-start;
   align-items: center;
   transition: transform 0.5s ease;
@@ -240,7 +241,7 @@ body.page-exit::before {
 }
 
 .carousel-item {
-  flex: 0 0 450px;
+  flex: 0 0 min(760px, 78vw);
   display: flex;
   flex-direction: column;
   opacity: 0.32;
@@ -266,10 +267,10 @@ body.page-exit::before {
 }
 
 .carousel-item.active {
-  flex: 0 0 450px;
+  flex: 0 0 min(760px, 78vw);
   opacity: 1;
   filter: saturate(1) brightness(1);
-  transform: scale(1.08);
+  transform: scale(1.03);
 }
 
 .carousel-item.active img {
@@ -292,7 +293,7 @@ body.page-exit::before {
 .funding-box-title {
   text-align: center;
   font-family: "Fraunces", "Georgia", serif;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 650;
   letter-spacing: 0.02em;
 }
@@ -391,13 +392,14 @@ body.page-exit::before {
 
 .carousel-item h2 {
   color: var(--text-color);
-  margin: 14px 0 0;
-  min-height: 2.6em;
-  line-height: 1.3;
+  margin: 24px 0 0;
+  min-height: 2.9em;
+  line-height: 1.2;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   font-family: "Fraunces", "Georgia", serif;
+  font-size: clamp(2.2rem, 3.6vw, 3.2rem);
   font-weight: 650;
   letter-spacing: var(--heading-letter-spacing);
 }
@@ -490,7 +492,7 @@ body.page-exit::before {
   color: var(--button-text);
   border-radius: 8px;
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: 18px;
   cursor: pointer;
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.4),
@@ -509,7 +511,7 @@ body.page-exit::before {
 .autoplay-toggle .autoplay-icon {
   font-family: "Fraunces", "Georgia", serif;
   font-weight: var(--icon-weight);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: -0.2px;
 }
 
@@ -535,7 +537,7 @@ body.page-exit::before {
   border: 0;
   color: #ffffff;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.45px;
   background: linear-gradient(120deg, #2b70ff 0%, #8f3dff 48%, #ff3f95 100%);
@@ -657,6 +659,24 @@ body.bright-mode {
   --icon-weight: 520;
 }
 
+body:not(.bright-mode) {
+  background: linear-gradient(140deg, #1d303e 0%, #087e8b 100%);
+}
+
+body:not(.bright-mode) .lab-banner,
+body:not(.bright-mode) .funding-box {
+  color: var(--text-color);
+  border-color: var(--card-border);
+  background: linear-gradient(145deg, var(--card-surface), var(--card-surface-strong));
+  box-shadow: var(--card-shadow);
+}
+
+body:not(.bright-mode) .lab-banner-logo-group img,
+body:not(.bright-mode) .funding-logo-tile {
+  background: rgba(73, 166, 175, 0.9);
+  border-color: rgba(88, 178, 186, 0.98);
+}
+
 body.page-exit .carousel-dots {
   opacity: 0;
   transform: translateX(-50%) translateY(20px) scale(0.9);
@@ -711,7 +731,7 @@ body.page-exit .carousel-container {
 
 @media (max-width: 768px) {
   :root {
-    --utility-stack-width: 154px;
+    --utility-stack-width: 176px;
     --utility-stack-right: 14px;
     --funding-left: 12px;
     --funding-width: min(300px, 72vw);
@@ -756,25 +776,32 @@ body.page-exit .carousel-container {
     right: calc(var(--utility-stack-right) + 56px + 10px);
     bottom: 14px;
     padding: 12px 24px;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .carousel {
-    gap: 72px;
+    gap: 112px;
   }
 
   .carousel-container {
-    margin-top: 16px;
+    margin-top: 44px;
+    padding: 48px 0 116px;
   }
 
   .carousel-item {
-    flex: 0 0 250px;
-    transform: scale(0.86);
+    flex: 0 0 min(500px, 92vw);
+    transform: scale(0.84);
   }
 
   .carousel-item.active {
-    flex: 0 0 250px;
-    transform: scale(1.06);
+    flex: 0 0 min(500px, 92vw);
+    transform: scale(1.03);
+  }
+
+  .carousel-item h2 {
+    margin-top: 16px;
+    min-height: 2.8em;
+    font-size: clamp(1.7rem, 6.1vw, 2.35rem);
   }
 
   .funding-grid {
@@ -805,3 +832,4 @@ body.page-exit .carousel-container {
     max-height: 62px;
   }
 }
+
