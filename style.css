@@ -478,7 +478,7 @@ body.page-exit::before {
 
 .autoplay-toggle {
   position: fixed;
-  top: 56px;
+  top: 64px;
   right: var(--utility-stack-right);
   left: auto;
   z-index: 30;
@@ -673,8 +673,8 @@ body:not(.bright-mode) .funding-box {
 
 body:not(.bright-mode) .lab-banner-logo-group img,
 body:not(.bright-mode) .funding-logo-tile {
-  background: rgba(73, 166, 175, 0.9);
-  border-color: rgba(88, 178, 186, 0.98);
+  background: #ffffff;
+  border-color: #ffffff;
 }
 
 body.page-exit .carousel-dots {
@@ -764,7 +764,7 @@ body.page-exit .carousel-container {
   }
 
   .autoplay-toggle {
-    top: 56px;
+    top: 64px;
     right: var(--utility-stack-right);
   }
 
