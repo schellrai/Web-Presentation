@@ -159,14 +159,14 @@
     style.textContent = `
       .language-menu {
         position: fixed;
-        top: 14px;
+        top: calc(14px * var(--screen-fit-scale, 1));
         right: var(--utility-stack-right, 20px);
         z-index: 45;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 4px;
-        font-size: 15px;
+        gap: calc(4px * var(--screen-fit-scale, 1));
+        font-size: calc(15px * var(--screen-fit-scale, 1));
         color: inherit;
       }
       .language-menu-row {
@@ -176,22 +176,22 @@
       }
       .language-menu select {
         width: var(--utility-stack-width, 172px);
-        height: 42px;
+        height: calc(42px * var(--screen-fit-scale, 1));
         box-sizing: border-box;
-        border-radius: 8px;
+        border-radius: calc(8px * var(--screen-fit-scale, 1));
         border: 1px solid #3b3f46;
         background: #222a34;
         color: #f3f4f6;
-        padding: 7px 14px;
+        padding: calc(7px * var(--screen-fit-scale, 1)) calc(14px * var(--screen-fit-scale, 1));
         line-height: 1.3;
-        font-size: 15px;
+        font-size: calc(15px * var(--screen-fit-scale, 1));
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
       }
       .language-menu select option {
         line-height: 1.3;
       }
       .language-note {
-        font-size: 13px;
+        font-size: calc(13px * var(--screen-fit-scale, 1));
         opacity: 0.8;
       }
       body.bright-mode .language-menu select {

@@ -19,6 +19,8 @@ const DEFAULT_TRANSITION_STYLE = 'transform 0.5s ease';
 const AUTO_SWIPE_DURATION_MS = 4000;
 const AUTO_SWIPE_DELAY_MS = 2500;
 const AUTO_SWIPE_TRANSITION_STYLE = `transform ${AUTO_SWIPE_DURATION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
+const DESIGN_BASE_WIDTH = 1472;
+const DESIGN_BASE_HEIGHT = 867;
 
 // --- OUR TEAM CLICK SOUND (START) ---
 // Quick disable option 1: set this to false.
@@ -82,6 +84,13 @@ function applyTheme(mode) {
     icon.textContent = isBright ? '\uD83C\uDF19' : '\u2600';
     themeToggle.setAttribute('aria-label', isBright ? 'Enable dark mode' : 'Enable bright mode');
   }
+}
+
+function updateScreenFitScale() {
+  const widthScale = window.innerWidth / DESIGN_BASE_WIDTH;
+  const heightScale = window.innerHeight / DESIGN_BASE_HEIGHT;
+  const fitScale = Math.min(1, widthScale, heightScale);
+  document.documentElement.style.setProperty('--screen-fit-scale', String(fitScale));
 }
 
 function setCarouselTransitionEnabled(enabled, transitionStyle = DEFAULT_TRANSITION_STYLE) {
@@ -526,10 +535,12 @@ window.addEventListener('keydown', (e) => {
 });
 
 window.addEventListener('resize', () => {
+  updateScreenFitScale();
   if (isDragging) return;
   updateCarousel({ animate: false });
 });
 
+updateScreenFitScale();
 buildInfiniteTrack();
 consumeRestoreIndex();
 buildDots();
