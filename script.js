@@ -425,8 +425,13 @@ function stopAutoSwipe() {
 }
 
 function resetNavigationLock() {
+  isNavigating = false;
   document.documentElement.classList.remove('is-navigating');
-  document.body.classList.remove('is-navigating');
+  document.body.classList.remove('is-navigating', 'page-exit');
+  allItems.forEach((item) => item.classList.remove('is-opening'));
+  if (missionCta) {
+    missionCta.classList.remove('is-opening');
+  }
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
 }
