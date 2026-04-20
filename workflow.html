@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="p1.title">Project 1 - ECMO</title>
+  <title data-i18n="p1.title">Workflow</title>
   <style>
     :root {
       --bg-color: #111418;
@@ -293,7 +293,7 @@
   <main class="page">
     <a class="back" href="index.html" data-i18n="nav.back">Back to Overview</a>
     <section class="content">
-      <img src="Workflow/Pig_axial_heartbeat.gif" alt="ECMO circuit" loading="lazy" decoding="async">
+      <img src="Workflow/Pig_axial_heartbeat_cut.gif" alt="ECMO circuit" loading="lazy" decoding="async">
       <div>
         <h1 data-i18n="p1.h1.what">Medical Imaging</h1>
         <p data-i18n="p1.p1">
@@ -334,6 +334,27 @@
   const backLinks = document.querySelectorAll('.back');
   const themeToggle = document.querySelector('.theme-toggle');
   let leaving = false;
+  const prefetchedDocuments = new Set();
+
+  function prefetchDocument(url) {
+    if (!url) return;
+
+    let absoluteUrl;
+    try {
+      absoluteUrl = new URL(url, window.location.href).href;
+    } catch {
+      return;
+    }
+
+    if (prefetchedDocuments.has(absoluteUrl)) return;
+    prefetchedDocuments.add(absoluteUrl);
+
+    const hint = document.createElement('link');
+    hint.rel = 'prefetch';
+    hint.as = 'document';
+    hint.href = absoluteUrl;
+    document.head.appendChild(hint);
+  }
 
   function applyTheme(mode) {
     const isBright = mode === 'bright';
@@ -358,7 +379,14 @@
     window.localStorage.setItem('themeMode', nextMode);
   });
 
+  if (backLinks.length > 0) {
+    prefetchDocument(backLinks[0].href);
+  }
+
   backLinks.forEach((link) => {
+    link.addEventListener('pointerenter', () => prefetchDocument(link.href), { passive: true });
+    link.addEventListener('touchstart', () => prefetchDocument(link.href), { passive: true });
+    link.addEventListener('focus', () => prefetchDocument(link.href));
     link.addEventListener('click', (event) => {
       event.preventDefault();
       if (leaving) return;
@@ -370,6 +398,7 @@
       const savedIndex = window.sessionStorage.getItem('lastProjectIndex');
       const returnIndex = savedIndex === null ? fallbackIndex : savedIndex;
       window.sessionStorage.setItem('returnToProjectIndex', String(returnIndex));
+      prefetchDocument(link.href);
 
       window.setTimeout(() => {
         window.location.href = link.href;

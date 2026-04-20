@@ -16,7 +16,7 @@ const TAP_TOLERANCE_PX = 10;
 const CLICK_SUPPRESS_MS = 260;
 const INITIAL_TRACK_COPIES = 5;
 const DEFAULT_TRANSITION_STYLE = 'transform 0.5s ease';
-const AUTO_SWIPE_DURATION_MS = 4000;
+const AUTO_SWIPE_DURATION_MS = 3200;
 const AUTO_SWIPE_DELAY_MS = 2500;
 const AUTO_SWIPE_TRANSITION_STYLE = `transform ${AUTO_SWIPE_DURATION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
 const DESIGN_BASE_WIDTH = 1472;
@@ -38,6 +38,7 @@ const templateItems = Array.from(document.querySelectorAll('.carousel-item'));
 let allItems = [];
 let realCount = templateItems.length;
 let currentIndex = 0;
+let lastActiveIndex = -1;
 let dots = [];
 let isNavigating = false;
 let pendingRestoreIndex = null;
@@ -47,11 +48,14 @@ let dragStartX = 0;
 let dragCurrentX = 0;
 let dragStartTranslate = 0;
 let activeTranslate = 0;
+let dragFrameId = null;
+let pendingDragTranslate = 0;
 let clickSuppressedUntil = 0;
 let autoSwipeActive = false;
 let autoSwipeTimerId = null;
 let fundingExpanded = false;
 let fundingAnimating = false;
+const prefetchedDocuments = new Set();
 
 function playOurTeamClickSoundOnce() {
   if (!ENABLE_OUR_TEAM_CLICK_SOUND) return;
@@ -99,7 +103,65 @@ function setCarouselTransitionEnabled(enabled, transitionStyle = DEFAULT_TRANSIT
 
 function setTranslate(x) {
   activeTranslate = x;
-  carousel.style.transform = `translateX(${x}px)`;
+  carousel.style.transform = `translate3d(${x}px, 0, 0)`;
+}
+
+function flushPendingDragTranslate() {
+  if (dragFrameId === null) return;
+  window.cancelAnimationFrame(dragFrameId);
+  dragFrameId = null;
+  setTranslate(pendingDragTranslate);
+}
+
+function queueDragTranslate(x) {
+  pendingDragTranslate = x;
+  if (dragFrameId !== null) return;
+  dragFrameId = window.requestAnimationFrame(() => {
+    dragFrameId = null;
+    setTranslate(pendingDragTranslate);
+  });
+}
+
+function prefetchDocument(url) {
+  if (!url) return;
+
+  let absoluteUrl;
+  try {
+    absoluteUrl = new URL(url, window.location.href).href;
+  } catch {
+    return;
+  }
+
+  if (prefetchedDocuments.has(absoluteUrl)) return;
+  prefetchedDocuments.add(absoluteUrl);
+
+  const hint = document.createElement('link');
+  hint.rel = 'prefetch';
+  hint.as = 'document';
+  hint.href = absoluteUrl;
+  document.head.appendChild(hint);
+}
+
+function prefetchNavigationTargets() {
+  const targets = new Set();
+  templateItems.forEach((item) => {
+    const target = item.dataset.target;
+    if (target) targets.add(target);
+  });
+  if (missionCta) {
+    const missionTarget = missionCta.getAttribute('href');
+    if (missionTarget) targets.add(missionTarget);
+  }
+
+  const schedulePrefetch = () => {
+    targets.forEach((target) => prefetchDocument(target));
+  };
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(schedulePrefetch, { timeout: 1200 });
+    return;
+  }
+  window.setTimeout(schedulePrefetch, 300);
 }
 
 function getItemCenter(item) {
@@ -130,9 +192,16 @@ function getSlideSpan() {
 }
 
 function applyActiveClasses() {
-  allItems.forEach((item, index) => {
-    item.classList.toggle('active', index === currentIndex);
-  });
+  if (lastActiveIndex === currentIndex && allItems[currentIndex]) return;
+
+  if (lastActiveIndex >= 0) {
+    const previousActive = allItems[lastActiveIndex];
+    if (previousActive) previousActive.classList.remove('active');
+  }
+
+  const nextActive = allItems[currentIndex];
+  if (nextActive) nextActive.classList.add('active');
+  lastActiveIndex = currentIndex;
 }
 
 function updateDots() {
@@ -190,6 +259,9 @@ function prependCopyBlocks(blockCount) {
   carousel.insertBefore(fragment, carousel.firstChild);
   allItems = [...added, ...allItems];
   currentIndex += added.length;
+  if (lastActiveIndex >= 0) {
+    lastActiveIndex += added.length;
+  }
   return added.length;
 }
 
@@ -204,6 +276,7 @@ function buildInfiniteTrack() {
 
   carousel.replaceChildren();
   allItems = [];
+  lastActiveIndex = -1;
 
   appendCopyBlocks(Math.max(INITIAL_TRACK_COPIES, 3));
   currentIndex = realCount * Math.floor(Math.max(INITIAL_TRACK_COPIES, 3) / 2);
@@ -370,6 +443,7 @@ function navigateWithTransition(item) {
   if (isNavigating || shouldSuppressClick()) return;
   const target = item.dataset.target;
   if (!target) return;
+  prefetchDocument(target);
 
   if (target === OUR_TEAM_TARGET) {
     // OUR_TEAM_CLICK_SOUND: comment out this next line to disable quickly.
@@ -397,6 +471,7 @@ function navigateMissionWithTransition(event) {
 
   const target = missionCta.getAttribute('href');
   if (!target) return;
+  prefetchDocument(target);
 
   stopAutoSwipe();
   isNavigating = true;
@@ -421,6 +496,7 @@ function onPointerDown(e) {
   dragCurrentX = e.clientX;
   dragStartTranslate = activeTranslate;
   container.classList.add('is-dragging');
+  pendingDragTranslate = dragStartTranslate;
 
   setCarouselTransitionEnabled(false);
 }
@@ -478,15 +554,15 @@ function setFundingExpanded(expanded) {
 
 function onPointerMove(e) {
   if (!isDragging || e.pointerId !== dragPointerId) return;
-  if (e.cancelable) e.preventDefault();
 
   dragCurrentX = e.clientX;
   const deltaX = dragCurrentX - dragStartX;
-  setTranslate(dragStartTranslate + deltaX);
+  queueDragTranslate(dragStartTranslate + deltaX);
 }
 
 function onPointerUpOrCancel(e) {
   if (!isDragging || e.pointerId !== dragPointerId) return;
+  flushPendingDragTranslate();
 
   const deltaX = dragCurrentX - dragStartX;
   const absDelta = Math.abs(deltaX);
@@ -545,6 +621,7 @@ buildInfiniteTrack();
 consumeRestoreIndex();
 buildDots();
 resetNavigationLock();
+prefetchNavigationTargets();
 
 if (pendingRestoreIndex !== null) {
   restoreCarouselPosition(pendingRestoreIndex);

@@ -413,8 +413,8 @@
           <p class="team-email">luca.pasini@ricam.oeaw.ac.at</p>
         </article>
         <article class="team-member">
-          <h2>Laura FÃƒÆ’Ã‚Â¼ssel BSc</h2>
-          <img src="Team/LF.jpg" alt="Laura FÃƒÆ’Ã‚Â¼ssel" loading="lazy" decoding="async">
+          <h2>Laura Füssel BSc</h2>
+          <img src="Team/LF.jpg" alt="Laura Füssel" loading="lazy" decoding="async">
           <p>MSc Student</p>
           <p class="team-email">laura.fuessel@ricam.oeaw.ac.at</p>
         </article>
@@ -426,7 +426,7 @@
         </article>
         <article class="team-member">
           <h2>Matteo Micocci BSc</h2>
-          <img src="Team/Cartoon.jpg" alt="Matteo Micocci" loading="lazy" decoding="async">
+          <img src="Team/MM.jpg" alt="Matteo Micocci" loading="lazy" decoding="async">
           <p>Visiting MSc Student</p>
           <p class="team-email">@ricam.oeaw.ac.at</p>
         </article>
@@ -439,11 +439,11 @@
       </div>
     </section>
     <section class="content content-secondary">
-      <img src="Team/Cartoon.jpg" alt="Our Team" loading="lazy" decoding="async">
+      <img src="Team/social_media.png" alt="Our Team" loading="lazy" decoding="async">
       <div>
         <h1 data-i18n="team.h1.work">Socials</h1>
         <p data-i18n="team.p4">
-          text
+        
         </p>
       </div>
     </section>
@@ -455,6 +455,27 @@
   const backLinks = document.querySelectorAll('.back');
   const themeToggle = document.querySelector('.theme-toggle');
   let leaving = false;
+  const prefetchedDocuments = new Set();
+
+  function prefetchDocument(url) {
+    if (!url) return;
+
+    let absoluteUrl;
+    try {
+      absoluteUrl = new URL(url, window.location.href).href;
+    } catch {
+      return;
+    }
+
+    if (prefetchedDocuments.has(absoluteUrl)) return;
+    prefetchedDocuments.add(absoluteUrl);
+
+    const hint = document.createElement('link');
+    hint.rel = 'prefetch';
+    hint.as = 'document';
+    hint.href = absoluteUrl;
+    document.head.appendChild(hint);
+  }
 
   function applyTheme(mode) {
     const isBright = mode === 'bright';
@@ -479,7 +500,14 @@
     window.localStorage.setItem('themeMode', nextMode);
   });
 
+  if (backLinks.length > 0) {
+    prefetchDocument(backLinks[0].href);
+  }
+
   backLinks.forEach((link) => {
+    link.addEventListener('pointerenter', () => prefetchDocument(link.href), { passive: true });
+    link.addEventListener('touchstart', () => prefetchDocument(link.href), { passive: true });
+    link.addEventListener('focus', () => prefetchDocument(link.href));
     link.addEventListener('click', (event) => {
       event.preventDefault();
       if (leaving) return;
@@ -491,6 +519,7 @@
       const savedIndex = window.sessionStorage.getItem('lastProjectIndex');
       const returnIndex = savedIndex === null ? fallbackIndex : savedIndex;
       window.sessionStorage.setItem('returnToProjectIndex', String(returnIndex));
+      prefetchDocument(link.href);
 
       window.setTimeout(() => {
         window.location.href = link.href;
