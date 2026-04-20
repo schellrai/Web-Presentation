@@ -479,7 +479,7 @@ body.page-exit::before {
 
 .autoplay-toggle {
   position: fixed;
-  top: calc(64px * var(--screen-fit-scale));
+  top: calc(120px * var(--screen-fit-scale));
   right: var(--utility-stack-right);
   left: auto;
   z-index: 30;
@@ -765,7 +765,7 @@ body.page-exit .carousel-container {
   }
 
   .autoplay-toggle {
-    top: 64px;
+    top: 120px;
     right: var(--utility-stack-right);
   }
 

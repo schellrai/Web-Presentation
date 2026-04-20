@@ -2,7 +2,7 @@
   const STORAGE_KEY = "appLang";
   const FALLBACK_LANG = "en";
   const LANG_LABELS = {
-    en: "English (Original)",
+    en: "English",
     de: "German",
     it: "Italian",
     es: "Spanish",
@@ -34,7 +34,7 @@
       }
     });
     sourceByKey["lang.label"] = "Language";
-    sourceByKey["lang.en"] = "English (Original)";
+    sourceByKey["lang.en"] = "English";
     sourceByKey["lang.de"] = "German";
     sourceByKey["lang.it"] = "Italian";
     sourceByKey["lang.es"] = "Spanish";
@@ -126,8 +126,8 @@
     const note = document.querySelector(".language-note");
     if (!note) return;
     if (activeLang === FALLBACK_LANG) {
-      note.textContent = "";
-      note.hidden = true;
+      note.textContent = "Original";
+      note.hidden = false;
       return;
     }
     note.textContent = getText("lang.ai_notice");
@@ -164,8 +164,15 @@
         z-index: 45;
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: stretch;
         gap: calc(4px * var(--screen-fit-scale, 1));
+        width: var(--utility-stack-width, 172px);
+        box-sizing: border-box;
+        padding: calc(8px * var(--screen-fit-scale, 1));
+        border-radius: calc(12px * var(--screen-fit-scale, 1));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(18, 24, 32, 0.88);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.36);
         font-size: calc(15px * var(--screen-fit-scale, 1));
         color: inherit;
       }
@@ -175,7 +182,7 @@
         gap: 8px;
       }
       .language-menu select {
-        width: var(--utility-stack-width, 172px);
+        width: 100%;
         height: calc(42px * var(--screen-fit-scale, 1));
         box-sizing: border-box;
         border-radius: calc(8px * var(--screen-fit-scale, 1));
@@ -192,7 +199,14 @@
       }
       .language-note {
         font-size: calc(13px * var(--screen-fit-scale, 1));
+        line-height: 1.35;
+        margin-top: calc(2px * var(--screen-fit-scale, 1));
         opacity: 0.8;
+        overflow-wrap: anywhere;
+      }
+      body.bright-mode .language-menu {
+        border-color: #cdbca6;
+        background: rgba(247, 240, 228, 0.94);
       }
       body.bright-mode .language-menu select {
         border-color: #cdbca6;
