@@ -6,6 +6,8 @@ const autoplayToggle = document.querySelector('.autoplay-toggle');
 const missionCta = document.querySelector('.mission-cta');
 const fundingPanel = document.querySelector('.funding-fixed');
 const fundingBackdrop = document.querySelector('.funding-backdrop');
+const qrPanel = document.querySelector('.qr-fixed');
+const qrBackdrop = document.querySelector('.qr-backdrop');
 
 if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
@@ -55,6 +57,8 @@ let autoSwipeActive = false;
 let autoSwipeTimerId = null;
 let fundingExpanded = false;
 let fundingAnimating = false;
+let qrExpanded = false;
+let qrAnimating = false;
 const prefetchedDocuments = new Set();
 
 function playOurTeamClickSoundOnce() {
@@ -509,7 +513,7 @@ function onPointerDown(e) {
 function isSwipeStartExcluded(target) {
   if (!(target instanceof Element)) return false;
   return Boolean(
-    target.closest('select, input, textarea, [contenteditable="true"], .language-menu, .funding-fixed, .funding-backdrop')
+    target.closest('select, input, textarea, [contenteditable="true"], .language-menu, .funding-fixed, .funding-backdrop, .qr-fixed, .qr-backdrop')
   );
 }
 
@@ -555,6 +559,50 @@ function setFundingExpanded(expanded) {
     fundingPanel.removeEventListener('transitionend', finishAnimation);
   };
   fundingPanel.addEventListener('transitionend', finishAnimation);
+}
+
+function setQrExpanded(expanded) {
+  if (!qrPanel || !qrBackdrop) return;
+  if (qrAnimating || qrExpanded === expanded) return;
+
+  const firstRect = qrPanel.getBoundingClientRect();
+
+  qrPanel.classList.toggle('is-expanded', expanded);
+  qrPanel.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  qrBackdrop.classList.toggle('is-visible', expanded);
+  qrExpanded = expanded;
+
+  const lastRect = qrPanel.getBoundingClientRect();
+  const dx = firstRect.left - lastRect.left;
+  const dy = firstRect.top - lastRect.top;
+  const sx = firstRect.width / Math.max(lastRect.width, 1);
+  const sy = firstRect.height / Math.max(lastRect.height, 1);
+
+  if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 && Math.abs(1 - sx) < 0.01 && Math.abs(1 - sy) < 0.01) {
+    qrPanel.style.transform = 'none';
+    qrAnimating = false;
+    return;
+  }
+
+  qrAnimating = true;
+  qrPanel.style.transition = 'none';
+  qrPanel.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+
+  // Force layout so the inverted state is committed before animating to natural state.
+  qrPanel.getBoundingClientRect();
+
+  window.requestAnimationFrame(() => {
+    qrPanel.style.transition = 'transform 360ms cubic-bezier(0.2, 0.8, 0.25, 1)';
+    qrPanel.style.transform = 'none';
+  });
+
+  const finishAnimation = (event) => {
+    if (event.propertyName !== 'transform') return;
+    qrPanel.style.transition = '';
+    qrAnimating = false;
+    qrPanel.removeEventListener('transitionend', finishAnimation);
+  };
+  qrPanel.addEventListener('transitionend', finishAnimation);
 }
 
 function onPointerMove(e) {
@@ -688,6 +736,37 @@ if (fundingPanel && fundingBackdrop) {
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && fundingExpanded) {
       setFundingExpanded(false);
+    }
+  });
+}
+
+if (qrPanel && qrBackdrop) {
+  qrPanel.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!qrExpanded) {
+      setQrExpanded(true);
+    }
+  });
+
+  qrPanel.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setQrExpanded(!qrExpanded);
+    }
+    if (event.key === 'Escape' && qrExpanded) {
+      event.preventDefault();
+      setQrExpanded(false);
+    }
+  });
+
+  qrBackdrop.addEventListener('click', () => {
+    setQrExpanded(false);
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && qrExpanded) {
+      setQrExpanded(false);
     }
   });
 }

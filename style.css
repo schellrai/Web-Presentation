@@ -203,6 +203,12 @@ body.page-exit::before {
   box-shadow: var(--card-shadow);
   padding: calc(6px * var(--screen-fit-scale));
   box-sizing: border-box;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: none;
+  translate: 0 0;
+  transform-origin: top left;
+  will-change: transform;
 }
 
 .qr-fixed img {
@@ -211,6 +217,33 @@ body.page-exit::before {
   object-fit: contain;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.qr-fixed.is-expanded {
+  left: 50%;
+  top: 50%;
+  width: min(calc(420px * var(--screen-fit-scale)), 54vw);
+  height: min(calc(420px * var(--screen-fit-scale)), 54vw);
+  translate: -50% -50%;
+  z-index: 72;
+  border-radius: calc(16px * var(--screen-fit-scale));
+  padding: calc(14px * var(--screen-fit-scale));
+  cursor: default;
+}
+
+.qr-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 61;
+  background: rgba(9, 12, 18, 0.56);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.qr-backdrop.is-visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .carousel-container {
@@ -762,6 +795,12 @@ body.page-exit .carousel-container {
     width: var(--qr-size);
     height: var(--qr-size);
     padding: 5px;
+  }
+
+  .qr-fixed.is-expanded {
+    width: min(84vw, 380px);
+    height: min(84vw, 380px);
+    padding: 10px;
   }
 
   .autoplay-toggle {
