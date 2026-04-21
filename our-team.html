@@ -230,6 +230,39 @@
       margin-top: 56px;
     }
 
+    .social-media-panel {
+      grid-column: 1 / -1;
+      justify-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .social-media-panel h1 {
+      margin-bottom: 0;
+      text-align: center;
+    }
+
+    .social-media-icons {
+      width: min(100%, 760px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 26px;
+    }
+
+    .social-media-icons img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #2a2f36;
+      justify-self: stretch;
+    }
+
+    body.bright-mode .social-media-icons img {
+      border-color: #cfbfa8;
+    }
+
     .streamlines {
       margin-top: 56px;
       text-align: center;
@@ -439,12 +472,12 @@
       </div>
     </section>
     <section class="content content-secondary">
-      <img src="Team/social_media.png" alt="Our Team" loading="lazy" decoding="async">
-      <div>
-        <h1 data-i18n="team.h1.work">Socials</h1>
-        <p data-i18n="team.p4">
-        
-        </p>
+      <div class="social-media-panel">
+        <h1 data-i18n="team.h1.work">Social-Media</h1>
+        <div class="social-media-icons">
+          <img src="Workflow/social_mediaLI.png" alt="LinkedIn" loading="lazy" decoding="async">
+          <img src="Workflow/social_mediaYT.png" alt="YouTube" loading="lazy" decoding="async">
+        </div>
       </div>
     </section>
     <a class="back back-bottom" href="index.html" data-i18n="nav.back">Back to Overview</a>
