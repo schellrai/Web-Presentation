@@ -165,7 +165,7 @@
     .content {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 90px;
+      gap: 108px;
       align-items: center;
     }
 
@@ -176,7 +176,7 @@
     }
 
     .content img.overview-img {
-      width: 112%;
+      width: 96%;
       max-width: none;
     }
 
@@ -231,6 +231,33 @@
 
     .content-secondary {
       margin-top: 56px;
+    }
+
+    .mission-copy {
+      justify-self: center;
+      align-self: center;
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .mission-copy h1 {
+      margin: 0;
+    }
+
+    .mission-text {
+      margin: 0;
+    }
+
+    .mission-text p {
+      margin: 0 0 12px;
+    }
+
+    .mission-text p:last-child {
+      margin-bottom: 0;
     }
 
     .streamlines {
@@ -301,17 +328,20 @@
   <main class="page">
     <a class="back" href="index.html" data-i18n="nav.back">Back to Overview</a>
     <section class="content">
-      <img class="overview-img" src="Graphics/Mission/Overview.png" alt="Twin gif" loading="lazy" decoding="async">
-      <div>
+      <img class="overview-img" src="Mission/LinzLab Flyer.jpg" alt="Twin gif" loading="lazy" decoding="async">
+      <div class="mission-copy">
         <h1 data-i18n="p1.h1.what">OUR MISSION</h1>
-        <p data-i18n="team.p2">
-          Our mission is to advance medical interventions through innovative in-silico modelling 
-          techniques. Our current research focuses on enhancing the personalization of ablation 
-          treatments and ECMO interventions using patient-specific modelling.  
-        </p>
-        <p data-i18n="team.p3">
-          Our ambition is to ensure that patients receive the most effective and personalized 
-          care for improved health outcomes. 
+        <div class="mission-text">
+          <p data-i18n="team.p2">
+            Our mission is to advance medical interventions through innovative in-silico modelling 
+            techniques. Our current research focuses on enhancing the personalization of ablation 
+            treatments and ECMO interventions using patient-specific modelling.  
+          </p>
+          <p data-i18n="team.p3">
+            Our ambition is to ensure that patients receive the most effective and personalized 
+            care for improved health outcomes. 
+          </p>
+        </div>
       </div>
     </section>
     <a class="back back-bottom" href="index.html" data-i18n="nav.back">Back to Overview</a>
