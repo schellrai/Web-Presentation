@@ -286,7 +286,8 @@ body.page-exit::before {
   cursor: pointer;
 }
 
-.carousel-item img {
+.carousel-item img,
+.carousel-item video {
   width: 100%;
   aspect-ratio: 16 / 10;
   object-fit: contain;
@@ -307,7 +308,8 @@ body.page-exit::before {
   transform: scale(1.03);
 }
 
-.carousel-item.active img {
+.carousel-item.active img,
+.carousel-item.active video {
   box-shadow: var(--card-shadow), 0 20px 44px var(--card-active-shadow);
 }
 
