@@ -175,6 +175,14 @@
         box-shadow: 0 10px 22px rgba(0, 0, 0, 0.36);
         font-size: calc(15px * var(--screen-fit-scale, 1));
         color: inherit;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .language-menu.is-hidden {
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
       }
       .language-menu-row {
         display: flex;
@@ -248,6 +256,28 @@
     wrapper.appendChild(note);
 
     document.body.appendChild(wrapper);
+    setupLanguageMenuScrollBehavior(wrapper);
+  }
+
+  function getLanguageMenuScrollTop() {
+    const page = document.querySelector(".page");
+    if (page) return page.scrollTop;
+    return window.scrollY || document.documentElement.scrollTop || 0;
+  }
+
+  function setupLanguageMenuScrollBehavior(wrapper) {
+    const updateVisibility = () => {
+      wrapper.classList.toggle("is-hidden", getLanguageMenuScrollTop() > 8);
+    };
+
+    const page = document.querySelector(".page");
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility, { passive: true });
+    if (page) {
+      page.addEventListener("scroll", updateVisibility, { passive: true });
+    }
+
+    updateVisibility();
   }
 
   async function setLanguage(lang) {

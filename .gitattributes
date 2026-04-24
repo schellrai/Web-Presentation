@@ -1,3 +1,4 @@
 .gitattributes text eol=lf
 index.html text eol=lf
 style.css text eol=lf
+i18n.js text eol=lf
